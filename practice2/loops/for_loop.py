@@ -1,5 +1,2 @@
-fruits = ["apple", "banana", "cherry"]
-for x in fruits:
-  if x == "banana":
-    continue
+for x in "banana":
   print(x)
