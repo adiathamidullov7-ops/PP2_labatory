@@ -1,22 +1,24 @@
-def minimal(l):
-    min=l[0]
-    for i in l:
-        if i<min:
-           min=i
-    return min
+def my_kids(*kids):  #Creating function "Whose my kid?"
+    print("My kid " + kids[0] ) #Chossing my kid
+my_kids("Alisa", "Maria", "Kane") #The Set of my kid
 
-def minimal_2(m):
-    min2=m[0]
-    for i in m:
-        if i<min2:
-            min2 = i
-    return minimal_2
-num1 = [1, 2, 3, 4, 5]
-min(num1)
-num2 = [6, 7, 8, 9]
-min(num2)
+def my_kids_2(*args):
+    print("Type: ",  type(args))
+    print("First argument: ", args[0])
+    print("Second argument: ", args[1] )
+    print("All arguments: ", args)
+my_kids_2("Alisa", "Maria", "Kane")
 
-if num1< num2:
-    print("num2")
-else:
-    print(num2)
+def my_kids_3(greeting, *names):
+    for name in names:
+        print(greeting, name)
+my_kids_3("Hello ", "Maria", "Kane")
+
+def my_function(*number):
+    total = 0
+    for num in number:
+        total += num
+    return total
+print(my_function(1,2,3))
+print(my_function(10, 20, 30, 40))
+print(my_function(5))
