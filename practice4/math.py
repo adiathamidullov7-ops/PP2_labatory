@@ -1,18 +1,32 @@
-u= min(5, 10, 25)
-t = max(5, 10, 25)
-print(u)
-print(t)
+import math
+
+x = int(input())
+print((math.pi * x)/180)
+
+h = int(input())
+b = int(input())
+a = int(input())
+area = (a+b)/2 *h
+print(float(area))
+
+
+n = int(input())
+a = int(input())
+square = pow(n)
+area = (n*square)/ (4* math.tan(math.pi /n))
+print(area)
 
 
 
-b = abs(-7.26)
-print(b)
+a = int(input())
+h = int(input())
+area = a*h
+print(area)
 
 
-a = pow(4, 3)
-print(a)
 
 
 
-y = (5, 4, 3)
-print(y[::-1])
+
+
+
