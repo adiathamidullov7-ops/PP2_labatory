@@ -3,7 +3,7 @@ import json
 with open(r"C:\Users\adiat\Music\pp2_adia\practice5\check.txt", encoding="utf-8") as f:
     text = f.read()
 
-# Prices
+# Product
 prices = [float(p.replace(" ", "").replace(",", ".")) 
           for p in re.findall(r"\n([\d ]+,\d{2})\nСтоимость", text)]
 
