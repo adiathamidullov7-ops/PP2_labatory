@@ -17,7 +17,7 @@ with open(file_path, "w", encoding="utf-8") as f:
 
 print("Файл создан!\n")
 
-# Шаг 3. Read files
+#  Read files
 students = []
 
 for filename in os.listdir(folder):
