@@ -1,3 +1,0 @@
-Hello
-This write files
-Python write this file
