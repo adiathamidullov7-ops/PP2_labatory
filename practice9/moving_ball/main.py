@@ -1,47 +1,52 @@
-class Ball:
-    
-    RADIUS  = 25          
-    STEP    = 20         
-    COLOR   = (220, 30, 30)
+import pygame
+from ball import Ball
 
-    def __init__(self, screen_width, screen_height):
-        self.screen_w = screen_width
-        self.screen_h = screen_height
-        self.radius   = self.RADIUS
-        self.step     = self.STEP
-        self.color    = self.COLOR
-        # Start in the centre
-        self.x = screen_width  // 2
-        self.y = screen_height // 2
+WIDTH = 800
+HEIGHT = 600
+BACKGROUND_COLOR = (255, 255, 255)
+FPS = 60
 
-   
 
-    def move_up(self):
-       
-        new_y = self.y - self.step
-        if new_y - self.radius >= 0:
-            self.y = new_y
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Moving Ball Game")
+    clock = pygame.time.Clock()
 
-    def move_down(self):
-        
-        new_y = self.y + self.step
-        if new_y + self.radius <= self.screen_h:
-            self.y = new_y
+    ball = Ball(
+        x=WIDTH // 2,
+        y=HEIGHT // 2,
+        radius=25,
+        color=(255, 0, 0),
+        screen_width=WIDTH,
+        screen_height=HEIGHT,
+        step=20,
+    )
 
-    def move_left(self):
-        
-        new_x = self.x - self.step
-        if new_x - self.radius >= 0:
-            self.x = new_x
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    def move_right(self):
-        
-        new_x = self.x + self.step
-        if new_x + self.radius <= self.screen_w:
-            self.x = new_x
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    ball.move(0, -ball.step)
+                elif event.key == pygame.K_DOWN:
+                    ball.move(0, ball.step)
+                elif event.key == pygame.K_LEFT:
+                    ball.move(-ball.step, 0)
+                elif event.key == pygame.K_RIGHT:
+                    ball.move(ball.step, 0)
 
-   
+        screen.fill(BACKGROUND_COLOR)
+        ball.draw(screen)
 
-    def get_pos(self):
-        
-        return (self.x, self.y)
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
