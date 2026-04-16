@@ -35,7 +35,7 @@ class MP3Player:
         pygame.mixer.init()
 
         self.font_title = pygame.font.SysFont("arial", 30, bold=True)
-        self.font_info = pygame.font.SysFont("arial", 24)
+        self.font_info = pygame.font.SysFont("arial", 12)
 
         self.play_button = Button(180, 500, 140, 50, "Play")
         self.stop_button = Button(380, 500, 140, 50, "Stop")
