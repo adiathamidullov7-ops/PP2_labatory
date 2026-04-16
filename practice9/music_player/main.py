@@ -6,7 +6,7 @@ from player import MP3Player
 def main():
     pygame.init()
 
-    WIDTH, HEIGHT = 900, 600
+    WIDTH, HEIGHT = 1200, 600
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Pygame MP3 Player")
 
