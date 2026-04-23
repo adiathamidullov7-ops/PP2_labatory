@@ -20,15 +20,15 @@ class MickeyClock:
         self.image_path = Path(image_path)
         self.background = self.load_background()
 
-        # Центр часов
+        
         self.center_x = self.width // 2
         self.center_y = self.height // 2
 
-        # Длина стрелок
+        
         self.hour_len = 150
         self.minute_len = 230
 
-        # Цвета
+       
         self.hour_color = (150, 150, 150)
         self.minute_color = (200, 0, 0)
         self.center_color = (0, 0, 0)
