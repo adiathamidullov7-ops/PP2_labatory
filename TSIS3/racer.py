@@ -23,6 +23,10 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 BLACK = (20, 20, 20)
 
+# ===================== NEW COLORS =====================
+BLUE = (0, 120, 255)     # NITRO
+ORANGE = (255, 140, 0)   # SHIELD
+
 # ===================== IMAGES =====================
 player_img = pygame.image.load(r"C:\Users\adiat\Music\pp2_adia\TSIS3\musics\player_car.png")
 traffic_img = pygame.image.load(r"C:\Users\adiat\Music\pp2_adia\TSIS3\musics\traffic_car.png")
@@ -45,8 +49,13 @@ oil_spots = []
 potholes = []
 
 spawn_timer = 0
-
 slow_timer = 0
+
+# ===================== POWERUPS =====================
+nitro = False
+nitro_timer = 0
+
+shield = False
 
 
 # ===================== ROAD =====================
@@ -84,6 +93,7 @@ def spawn_pothole():
 def reset():
     global cars, barriers, oil_spots, potholes
     global score, speed, timer, slow_timer
+    global nitro, nitro_timer, shield
 
     cars = []
     barriers = []
@@ -95,6 +105,11 @@ def reset():
     timer = 0
     slow_timer = 0
 
+    nitro = False
+    nitro_timer = 0
+
+    shield = False
+
     player.x = ROAD_X + LANE_W
 
 
@@ -104,8 +119,8 @@ def game_over():
         screen.fill((0, 0, 0))
 
         screen.blit(font.render("GAME OVER", True, (255, 0, 0)), (120, 250))
-        screen.blit(font.render(f"Score: {score}", True, (255, 255, 255)), (130, 300))
-        screen.blit(font.render("R - Restart | ESC - Quit", True, (255, 255, 255)), (70, 350))
+        screen.blit(font.render(f"Score: {score}", True, WHITE), (130, 300))
+        screen.blit(font.render("R - Restart | ESC - Quit", True, WHITE), (70, 350))
 
         pygame.display.update()
 
@@ -123,7 +138,7 @@ def game_over():
                     sys.exit()
 
 
-# ===================== SLOW SYSTEM =====================
+# ===================== SLOW =====================
 def apply_slow(amount, duration):
     global speed, slow_timer
     speed = max(3, speed - amount)
@@ -140,9 +155,26 @@ def update_slow():
             speed += 0.02
 
 
-# ===================== GAME LOOP =====================
+# ===================== POWERUPS =====================
+def update_powerups():
+    global speed, nitro, nitro_timer, shield
+
+    # 🔵 NITRO
+    if nitro:
+        speed = base_speed + 6
+        nitro_timer -= 1
+        if nitro_timer <= 0:
+            nitro = False
+
+    # вернуть скорость если нет нитро
+    if not nitro:
+        speed = max(speed, base_speed)
+
+
+# ===================== MAIN =====================
 def run_game(screen):
     global spawn_timer, score, speed, timer
+    global nitro, nitro_timer, shield
 
     reset()
 
@@ -153,7 +185,6 @@ def run_game(screen):
         screen.fill(GRASS)
         draw_road()
 
-        # ===================== INPUT =====================
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
@@ -166,16 +197,19 @@ def run_game(screen):
         if keys[pygame.K_RIGHT]:
             player.x += speed
 
+        # 🔵 NITRO (SPACE)
+        if keys[pygame.K_SPACE] and not nitro:
+            nitro = True
+            nitro_timer = 120
+
+        # 🟠 SHIELD (SHIFT)
+        if keys[pygame.K_LSHIFT] and not shield:
+            shield = True
+
         player.x = max(ROAD_X + 5, min(ROAD_X + ROAD_W - 45, player.x))
 
-        # ===================== DIFFICULTY =====================
-        if timer % 500 == 0:
-            global base_speed
-            base_speed += 1
-
-        # ===================== SPAWN =====================
+        # spawn
         spawn_timer += 1
-
         if spawn_timer > 45:
             t = random.randint(1, 4)
 
@@ -190,7 +224,7 @@ def run_game(screen):
 
             spawn_timer = 0
 
-        # ===================== CARS (PNG) =====================
+        # cars
         for c in cars[:]:
             c.y += speed
 
@@ -198,42 +232,45 @@ def run_game(screen):
                 cars.remove(c)
                 score += 1
 
+            # 🟠 SHIELD LOGIC
             if player.colliderect(c):
-                game_over()
+                if shield:
+                    shield = False   # уничтожается после удара
+                    cars.remove(c)
+                    score += 2
+                    continue
+                else:
+                    game_over()
 
             screen.blit(traffic_img, (c.x, c.y))
 
-        # ===================== BARRIERS =====================
-        for b in barriers[:]:
+        # barriers (НЕ ТРОГАЕМ)
+        for b in barriers:
             b.y += speed
             pygame.draw.rect(screen, YELLOW, b)
 
-            if player.colliderect(b):
-                game_over()
-
-        # ===================== OIL =====================
-        for o in oil_spots[:]:
+        # oil (НЕ ТРОГАЕМ)
+        for o in oil_spots:
             o.y += speed
             pygame.draw.rect(screen, BLACK, o)
 
-            if player.colliderect(o):
-                apply_slow(3, 120)
-
-        # ===================== POTHOLES =====================
-        for p in potholes[:]:
+        # potholes (НЕ ТРОГАЕМ)
+        for p in potholes:
             p.y += speed
             pygame.draw.rect(screen, (80, 80, 80), p)
 
-            if player.colliderect(p):
-                apply_slow(2, 60)
-
-        # ===================== PLAYER (PNG) =====================
+        # player
         screen.blit(player_img, (player.x, player.y))
 
         update_slow()
+        update_powerups()
 
-        # ===================== SCORE =====================
-        text = font.render(f"Score: {score} Speed: {round(speed,1)}", True, WHITE)
-        screen.blit(text, (10, 10))
+        # ===================== UI =====================
+        screen.blit(font.render(
+            f"Score: {score} Speed: {round(speed,1)}"
+            + (" | NITRO" if nitro else "")
+            + (" | SHIELD" if shield else ""),
+            True, WHITE
+        ), (10, 10))
 
         pygame.display.update()
